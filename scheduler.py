@@ -17,11 +17,11 @@ class Scheduler:
     количество одновременно выполняющихся задач.
     Дополнительные поля:
     очередь задач, потоки, статусы стоп и рестарт"""
-    def __init__(self, pool_size=10):
+    def __init__(self, pool_size: int = 10):
 
         self.__pool_size = pool_size
-        self.__jobs_queue = Queue()
-        self.__threads = []
+        self.__jobs_queue: Queue = Queue()
+        self.__threads: list[Thread] = []
         self.__isStop = False
         self.__isRestart = False
         save_status(

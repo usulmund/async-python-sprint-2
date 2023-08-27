@@ -61,7 +61,7 @@ class AppTest(unittest.TestCase):
 
     def test_job_with_fs_delete(self):
         """Тест для проверки ФС-задачи удаления файла"""
-        file = 'fs_job_test_file.txt'
+        file = 'fs_job_file.txt'
         delete_job = Job(
             target=JobWithFS().delete,
             args=(file,)

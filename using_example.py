@@ -16,8 +16,9 @@ from scheduler import Scheduler
 from settings_store import clear_status_file
 from data import Data
 
-DATA_DIR = Data.data_dir
-CITIES = Data.cities
+data = Data()
+DATA_DIR = data.data_dir
+CITIES = data.cities
 
 
 """
@@ -102,7 +103,7 @@ def create_file():
             create_file_job = Job(
                 target=job_with_fs.create_file,
                 args=(f'{DATA_DIR}/{data_chunk}_data.txt',),
-                dependencies=[create_dir_job, ],
+                dependencies=(create_dir_job,),
             )
             create_file_job.run()
 
@@ -119,7 +120,7 @@ def sent_data_to_pipeline(data: Iterable):
     coro.send(None)
 
     for data_chunck in data:
-        print(f"sent_data_to_pipeline: {data_chunck}")
+        logging.debug(f'sent_data_to_pipeline: {data_chunck}')
         coro.send(data_chunck)
     coro.close()
     return ('success', 0)
@@ -148,7 +149,7 @@ def run_jobs_with_fs():
     create_file_job = Job(
         target=job_with_fs.create_file,
         args=(file_name_1, file_name_2, file_name_3),
-        dependencies=[create_dir_job, ],
+        dependencies=(create_dir_job,),
     )
     create_file_job.run()
 
@@ -157,14 +158,14 @@ def run_jobs_with_fs():
         args=((dir_name, 'ls'),),
         max_working_time=uniform(0, 3),
         tries=3,
-        dependencies=[create_dir_job, ],
+        dependencies=(create_dir_job,),
     )
     change_dir_job.run()
 
     delete_job = Job(
         target=job_with_fs.delete,
         args=(file_name_3,),
-        dependencies=[create_dir_job, create_file_job, ],
+        dependencies=(create_dir_job, create_file_job,),
     )
     delete_job.run()
 
@@ -190,14 +191,14 @@ def run_jobs_with_files():
         target=job_with_files.write_file,
         args=((file_name, data, 'w'),),
         tries=1,
-        dependencies=[create, ]
+        dependencies=(create,),
     )
     write.run()
 
     read = Job(
         target=job_with_files.read_file,
         args=(file_name,),
-        dependencies=[create, write, ]
+        dependencies=(create, write,),
     )
     read.run()
 
@@ -206,7 +207,7 @@ def run_jobs_with_files():
         args=(file_name,),
         tries=3,
         start_at=datetime.now() + timedelta(seconds=5),
-        dependencies=[create, ],
+        dependencies=(create,),
     )
     delete_file_job.run()
 
@@ -257,14 +258,14 @@ def run_scheduler_test():
         target=JobWithFiles().write_file,
         args=((file_name, data, 'w'),),
         tries=1,
-        dependencies=[create]
+        dependencies=(create,),
     )
     scheduler.send(write)
 
     read = Job(
         target=JobWithFiles().read_file,
         args=(file_name,),
-        dependencies=[create, write],
+        dependencies=(create, write),
         start_at=datetime.now() + timedelta(seconds=10),
     )
     scheduler.send(read)

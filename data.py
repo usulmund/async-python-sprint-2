@@ -1,9 +1,8 @@
 """Описание класса с данными"""
-from dataclasses import dataclass
+from pydantic import BaseModel
 
 
-@dataclass
-class Data:
+class Data(BaseModel):
     """Класс, хранящий констатные значания.
     Среди них:
     data_dir - директория для хранения данных json-анализатора,
@@ -11,10 +10,10 @@ class Data:
     statuses_file - файл для хранения статусов задач,
     cities - набор данных для анализатора.
     """
-    data_dir = 'cities_data_dir/'
-    logging_file = 'app-log.log'
-    status_file = 'STATUSES.txt'
-    cities = {
+    data_dir: str = 'cities_data_dir/'
+    logging_file: str = 'app-log.log'
+    status_file: str = 'STATUSES.txt'
+    cities: dict = {
         "MOSCOW":
         "https://code.s3.yandex.net/async-module/moscow-response.json",
         "PARIS":

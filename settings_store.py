@@ -3,14 +3,14 @@ import logging
 
 from data import Data
 
-STATUS_FILE = Data.status_file
+STATUS_FILE = Data().status_file
 
 
 def set_logging():
     """Устанавливает настройки логирования"""
     logging.basicConfig(
         level=logging.DEBUG,
-        filename=Data.logging_file,
+        filename=Data().logging_file,
         filemode='w',
         format='%(asctime)s: %(name)s - %(levelname)s - %(message)s'
     )

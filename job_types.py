@@ -200,7 +200,8 @@ class JobWithNet(JobPrototype):
         используется фунция analyze_json.
         Обработанные данные записываются в файл"""
         save_status('read url job is started')
-        data_dir = Data.data_dir
+        data = Data()
+        data_dir = data.data_dir
 
         if not os.path.exists(data_dir):
             data_dir = ''
